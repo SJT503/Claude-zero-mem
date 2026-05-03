@@ -1,43 +1,52 @@
 #!/usr/bin/env bash
-# zero-mem macOS/Linux 安装脚本
-# 用法: bash install.sh 或 curl ... | bash
+# zero-mem macOS/Linux install
+# Usage: bash install.sh
+#    or: curl -fsSL https://raw.githubusercontent.com/SJT503/Claude-zero-mem/main/install.sh | bash
 
 set -e
-echo -e "\033[1;36m=== zero-mem 安装 ===\033[0m"
+echo -e "\033[1;36m=== zero-mem install ===\033[0m"
 
 SKILL_DIR="${HOME}/.claude/skills/zero-mem"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASE_URL="https://raw.githubusercontent.com/SJT503/Claude-zero-mem/main"
 
-# 1. 创建技能目录
-echo "[1/3] 创建技能目录: ${SKILL_DIR}"
+# Detect if running from local clone or remote
+if [ -f "$(dirname "$0")/SKILL.md" ] 2>/dev/null; then
+    SRC="$(dirname "$0")"
+else
+    SRC=""
+fi
+
+# 1. Create skill directory
+echo "[1/3] Creating skill directory: ${SKILL_DIR}"
 mkdir -p "${SKILL_DIR}"
 
-# 2. 复制 SKILL.md
-echo "[2/3] 安装 SKILL.md"
-cp "${SCRIPT_DIR}/SKILL.md" "${SKILL_DIR}/SKILL.md"
-
-# 3. (可选) 安装 SessionStart 钩子
-echo "[3/3] 安装 SessionStart 钩子（可选）"
-HOOK_SCRIPT="${SCRIPT_DIR}/session-start.sh"
-
-if [ -f "${HOOK_SCRIPT}" ]; then
-    HOOK_DEST="${HOME}/.claude/hooks/zero-mem-session-start.sh"
-    mkdir -p "${HOME}/.claude/hooks"
-    cp "${HOOK_SCRIPT}" "${HOOK_DEST}"
-    chmod +x "${HOOK_DEST}"
-    echo "  钩子脚本已复制到: ${HOOK_DEST}"
-
-    SETTINGS_FILE="${HOME}/.claude/settings.json"
-    if [ -f "${SETTINGS_FILE}" ]; then
-        echo "  [提示] 如需 SessionStart 自动显示项目状态，请在 settings.json 中手动添加 hook"
-        echo "         详见 README.md 安装说明"
-    fi
+# 2. Install SKILL.md
+echo "[2/3] Installing SKILL.md"
+if [ -n "${SRC}" ] && [ -f "${SRC}/SKILL.md" ]; then
+    cp "${SRC}/SKILL.md" "${SKILL_DIR}/SKILL.md"
 else
-    echo "  (跳过 — session-start.sh 不在当前目录)"
+    curl -fsSL "${BASE_URL}/SKILL.md" -o "${SKILL_DIR}/SKILL.md"
+fi
+
+# 3. (Optional) Install SessionStart hook
+echo "[3/3] Installing SessionStart hook (optional)"
+HOOK_DEST="${HOME}/.claude/hooks/zero-mem-session-start.sh"
+mkdir -p "${HOME}/.claude/hooks"
+
+if [ -n "${SRC}" ] && [ -f "${SRC}/session-start.ps1" ]; then
+    cp "${SRC}/session-start.ps1" "${HOOK_DEST}"
+elif command -v curl &> /dev/null; then
+    curl -fsSL "${BASE_URL}/session-start.ps1" -o "${HOOK_DEST}"
+else
+    echo "  (Skipped — session-start.ps1 not available)"
+fi
+[ -f "${HOOK_DEST}" ] && chmod +x "${HOOK_DEST}" && echo "  Hook: ${HOOK_DEST}"
+
+if [ -f "${HOME}/.claude/settings.json" ]; then
+    echo "  [Tip] Add hook to settings.json hooks.SessionStart for auto status on startup"
+    echo "        See README for details"
 fi
 
 echo ""
-echo -e "\033[1;32m安装完成!\033[0m"
-echo -e "\033[1;32m重启 Claude Code 即可生效。\033[0m"
-echo ""
-echo -e "\033[1;30m验证: 下次启动 Claude Code 时会自动读取项目 session-log\033[0m"
+echo -e "\033[1;32mInstall complete!\033[0m"
+echo -e "\033[1;32mRestart Claude Code to take effect.\033[0m"
