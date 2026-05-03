@@ -1,61 +1,61 @@
-# zero-mem 变更日志
+# Changelog
 
 ---
 
 ## v6 (2026-05-03)
 
-### 新增
-- **统一模糊搜索**：跨所有记忆源的零成本模糊搜索。三级递进策略（精确 grep → 子串扩展 → 标签过滤），覆盖 `[fix]`/`[feature]`/`[decision]`/`[discovery]`/`[config]` 标签
-- **品牌更名**：mem-bridge → zero-mem / 零耗记忆
-- **三方对比表**：Claude Code 原生 vs claude-mem vs zero-mem 全维度对比
+### Added
+- **Unified fuzzy search**: Zero-cost fuzzy search across all memory sources. Three-tier strategy (exact grep → substring expansion → tag filtering), covering `[fix]`/`[feature]`/`[decision]`/`[discovery]`/`[config]` tags
+- **Rebrand**: mem-bridge → zero-mem / 零耗记忆
+- **Three-party comparison table**: Claude Code native vs claude-mem vs zero-mem, full dimension comparison
 
-### 改进
-- 搜索范围扩展到所有项目 session-log + 全局 session-log + MEMORY.md + 项目文件（四级并行）
-- 中英混合模糊匹配（"阈值"↔"threshold"）
+### Improved
+- Search scope: all project session-logs + global session-log + MEMORY.md + project files (four-level parallel)
+- Mixed-language fuzzy matching ("阈值" ↔ "threshold")
 
 ---
 
 ## v5 (2026-05-03)
 
-### 新增
-- **L2 去重检查**：写入长记忆前自动检查已有条目。关键词匹配判断"同一主题"，支持跳过/更新/新增三种操作
-- **按需周报**：用户说"周报"自动生成全部项目最近7天汇总，按项目分组输出
+### Added
+- **L2 dedup check**: Auto-check existing entries before writing long-term memory. Keyword-based topic matching with skip/update/add operations
+- **On-demand weekly report**: Say "weekly report" → auto-generate last 7 days summary across all projects, grouped by project
 
-### 移除
-- SessionEnd hook 退役（曾是自动空条目污染源）
+### Removed
+- SessionEnd hook retired (was the source of auto-generated empty entry pollution)
 
 ---
 
 ## v4 (2026-05-03)
 
-### 新增
-- **项目分离日志**：每个项目独立的 `session-log.md`，物理隔离不互相干扰
-- **类型标签**：5 种标签 `[fix]` `[feature]` `[decision]` `[discovery]` `[config]`
-- **状态行**：每个项目日志首行 `# PROJECT | Phase: X | Last: YYYY-MM-DD`
-- **Phase 可选值**：实验 | 生信分析 | 写作 | 投稿 | 修改 | 系统搭建
+### Added
+- **Project-isolated logs**: Each project gets its own `session-log.md`, physically separated
+- **Type tags**: 5 tags — `[fix]` `[feature]` `[decision]` `[discovery]` `[config]`
+- **Status line**: Each project log first line `# PROJECT | Phase: X | Last: YYYY-MM-DD`
+- **Phase values**: experiment | bioinformatics | writing | submission | revision | system-setup
 
-### 改进
-- 写入目标自动判断（项目级 vs 全局）
+### Improved
+- Auto-detect write target (project-level vs global)
 
 ---
 
 ## v3 (2026-05-03)
 
-### 新增
-- L2 长记忆全自动写入（AI 判断值得持久化 → 直接写入 MEMORY.md，不再询问用户）
+### Added
+- L2 fully automated: AI judges what's worth persisting → writes directly to MEMORY.md, no confirmation
 
 ---
 
 ## v2 (2026-05-03)
 
-### 新增
-- L1 全自动写入（每任务完成自动追加 session-log，不再询问用户）
+### Added
+- L1 fully automated: auto-append session-log after each task, no confirmation
 
 ---
 
 ## v1 (2026-05-03)
 
-### 首次发布
-- 三层记忆架构：L1 短记忆 + L2 长记忆 + L3 口头检索
-- 会话启动自动读取项目日志
-- L1 手动写入（每任务完成后询问）
+### Initial Release
+- Three-layer memory: L1 short-term + L2 long-term + L3 verbal retrieval
+- Auto-read project log on session start
+- L1 manual write (prompted after each task)
