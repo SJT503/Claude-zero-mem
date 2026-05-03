@@ -121,7 +121,7 @@ Say "weekly report" → All projects, last 7 days, grouped by project. Never aut
 curl -fsSL https://raw.githubusercontent.com/SJT503/Claude-zero-mem/main/install.sh | bash
 
 # Windows (PowerShell)
-iwr -Uri https://raw.githubusercontent.com/SJT503/Claude-zero-mem/main/install.ps1 | iex
+iwr -UseBasicParsing -Uri https://raw.githubusercontent.com/SJT503/Claude-zero-mem/main/install.ps1 | iex
 ```
 
 ### Manual (3 steps)
